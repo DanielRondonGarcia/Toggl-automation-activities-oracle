@@ -46,7 +46,7 @@ def forma_uno():
 def forma_dos():
     conectar()
     try:
-        cur.execute("SELECT * FROM bases_objetos where rownum < 11")
+        cur.execute("SELECT NUMERO_REQUERIMIENTO, TIPO, DESCRIPCION, FECHA, HORAS, USER_SISTEMA, FECHA_SISTEMA, ETAPA, ESTADO_DESDE, ESTADO_HASTA, RESPONSABLE_DESDE, RESPONSABLE_HASTA FROM sgi.req_actividades WHERE numero_requerimiento = 76871 AND ROWNUM < 11 ORDER BY fecha DESC")
         res = cur.fetchall()
         print(res)
     except cx_Oracle.Error as error:

@@ -19,8 +19,7 @@ from base64 import b64encode
 from dateutil.parser import parse
 import re
 
-from scrapping import Null
-
+Null = None
 # template of headers for our request
 headers = {
     "Authorization": "",
@@ -34,11 +33,24 @@ user_agent = "TogglPy"
 # ------------------------------------------------------------
 # Auxiliary methods
 # ------------------------------------------------------------
-def time_minute_to_hour(time):
-    return int(float(time.replace('Horas',''))*60)
+def timeMinuteToHour(time):
+    return round(time/timedelta(hours=1), 1)
 
 def decodeJSON(jsonString):
     return json.JSONDecoder().decode(jsonString)
+def cleanRq(str):
+    pattern = '(RQ\[[0-9]*\])'
+    lista = re.search(pattern,str)
+    limpieza = lista[1]
+    limpieza = re.sub("RQ\[","",limpieza)
+    return re.sub("\]","",limpieza)
+def cleanEtapa(str):
+    pattern = '(RQ\[[0-9]*\])'
+    lista = re.search(pattern,str)
+    limpieza = lista[1]
+    limpieza = re.sub("RQ\[","",limpieza)
+    return re.sub("\]","",limpieza)
+    
 # ------------------------------------------------------------
 # Methods that modify the headers to control our HTTP requests
 # ------------------------------------------------------------
@@ -58,18 +70,18 @@ setAPIKey("5618cca12fe41c7d6740979af73aa7c3")
     # Methods for directly requesting data from an endpoint
     # -----------------------------------------------------
 
-def request_api(url):
+def requestApi(url):
     url_result = requests.get(url, headers=headers)
     soup = BeautifulSoup(url_result.content, 'html.parser')
     site_json=json.loads(soup.text)
     return site_json
 
-response = request_api("https://api.track.toggl.com/api/v9/me")
+response = requestApi("https://api.track.toggl.com/api/v9/me")
 
 print("Client name: %s  Client ID: %s" % (response['fullname'], response['id']))
 
 
-response1 = request_api("https://api.track.toggl.com/api/v9/me/time_entries")
+response1 = requestApi("https://api.track.toggl.com/api/v9/me/time_entries")
 
 year = datetime.now().year
 month = datetime.now().month
@@ -78,19 +90,20 @@ hour = datetime.now().hour
 timestruct = datetime(year, month, day, hour).isoformat()
 print(timestruct)
 
-
+sum_time=0
 for time_entries in response1:
     print(time_entries['description'])
+    RQ = cleanRq(time_entries['description'])
+    print(RQ)
     start = re.sub("\+00:00","",time_entries['start'])
     start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
     print(start)
-    sum_time=0
     if time_entries['stop'] != Null:
         stop = datetime.strptime(time_entries['stop'], '%Y-%m-%dT%H:%M:%SZ')
         print(stop)
         diff=stop-start
-        hours=round(diff/timedelta(hours=1), 1)
-        sum_time+=hours
+        hours=timeMinuteToHour(diff)
+        sum_time=sum_time+hours
         print("Diff: %s  Diff in Hours: %s" % (diff, hours))
     print("\n")
-print("Total Hours: %s" % (sum_time))
+print("Total Hours: %s" % (round(sum_time,1)))

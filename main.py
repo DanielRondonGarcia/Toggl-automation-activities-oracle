@@ -2,24 +2,25 @@
 # -*- coding: utf-8 -*-
 # @author DanielRondonGarcia <daniel5232010@gmail.com>
 
-import os
-import sys
 from typing_extensions import Self
-import config
+from unittest import result
 import requests
 from requests.structures import CaseInsensitiveDict
 import json  # parsing json data
-import math
-import sys
-import time
 from bs4 import BeautifulSoup
 from base64 import b64encode
 from datetime import datetime,timedelta
-from base64 import b64encode
 from dateutil.parser import parse
 import re
+import sys
+import pprint
+import consultas
+import config
+import math
 
 Null = None
+flag = False
+now = datetime.now()
 # template of headers for our request
 headers = {
     "Authorization": "",
@@ -27,17 +28,33 @@ headers = {
     "Accept": "*/*",
     "User-Agent": "python/urllib",
 }
+def internet_on():
+    """Checks if internet connection is on by connecting to Google"""
+    try:
+        requests.get('http://www.google.com', timeout=10)
+        return True
+    except requests.exceptions.ConnectionError:
+        return False
+    except:
+        return False
+# ------------------------------------------------------------
+# Métodos auxiliares
+# ------------------------------------------------------------
+def progress_bar(progress,total):
+    percent=100*(progress/float(total))
+    bar='█'* int(percent)+'-'*(100 - int(percent))
+    print(f"\r{bar}|{percent:.2f}%",end="\r")
 
-# default API user agent value
-user_agent = "TogglPy"
-# ------------------------------------------------------------
-# Auxiliary methods
-# ------------------------------------------------------------
+def saveJson(data):
+    with open('logs/data-'+str(now.strftime('%d-%m-%Y'))+'.json', 'w', encoding="utf-8") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
+
 def timeMinuteToHour(time):
     return round(time/timedelta(hours=1), 1)
 
 def decodeJSON(jsonString):
     return json.JSONDecoder().decode(jsonString)
+
 def cleanRq(str):
     pattern = '(RQ\[[0-9]*\])'
     lista = re.search(pattern,str)
@@ -45,29 +62,41 @@ def cleanRq(str):
     limpieza = re.sub("RQ\[","",limpieza)
     return re.sub("\]","",limpieza)
 def cleanEtapa(str):
-    pattern = '(RQ\[[0-9]*\])'
+    pattern = '(ACT\[[0-9]*\-)'
     lista = re.search(pattern,str)
     limpieza = lista[1]
-    limpieza = re.sub("RQ\[","",limpieza)
+    limpieza = re.sub("ACT\[","",limpieza)
+    return re.sub("\-","",limpieza)
+
+def cleanAct(str):
+    pattern = '(-[0-9]{2}\])'
+    lista = re.search(pattern,str)
+    limpieza = lista[1]
+    limpieza = re.sub("\-","",limpieza)
     return re.sub("\]","",limpieza)
+
+def cleanDescription(str):
+    pattern = "(?<=\]-).*(?=.*)"
+    lista = re.search(pattern,str)
+    limpieza = lista[0]    
+    return limpieza
     
 # ------------------------------------------------------------
-# Methods that modify the headers to control our HTTP requests
+# Métodos que modifican los encabezados para controlar nuestras solicitudes HTTP
 # ------------------------------------------------------------
 def setAPIKey(APIKey):
-    '''set the API key in the request header'''
-    # craft the Authorization
+    '''establecer la clave API en el encabezado de la solicitud'''
+    # elaborar la Autorización
     authHeader = APIKey + ":" + "api_token"
     authHeader = "Basic " + b64encode(authHeader.encode()).decode('ascii').rstrip()
-    print(authHeader)
 
     # add it into the header
     headers['Authorization'] = authHeader
 
-setAPIKey("5618cca12fe41c7d6740979af73aa7c3")
+setAPIKey(config.apiKey)
 
     # -----------------------------------------------------
-    # Methods for directly requesting data from an endpoint
+    # Métodos para solicitar datos directamente desde un punto final
     # -----------------------------------------------------
 
 def requestApi(url):
@@ -76,34 +105,65 @@ def requestApi(url):
     site_json=json.loads(soup.text)
     return site_json
 
-response = requestApi("https://api.track.toggl.com/api/v9/me")
+    # -----------------------------------------------------
+    # Insertar los datos a la base de datos
+    # -----------------------------------------------------
+def main():
+    print("Hola")
+    print("Comprobando la conectividad a Internet...")
+    if not internet_on():
+        print("OMG! ¡No hay conexión a Internet!")
+        print("¡Adiós mundo cruel!")
+        sys.exit()    
+    print("¡Internet parece estar bien!")
+    print("\nIntentando conectarme a Toggl, ¡espera!\n")
+    try:
+        response = requestApi("https://api.track.toggl.com/api/v9/me")
+        print("Client name: %s  Client ID: %s" % (response['fullname'], response['id']))
+        flag = True
+    except:
+        print("OMG! ¡La solicitud de alternar falló por alguna razón misteriosa!")
+        print("¡Adiós mundo cruel!")
+        sys.exit()
 
-print("Client name: %s  Client ID: %s" % (response['fullname'], response['id']))
+    if flag:
+        time_entries = requestApi("https://api.track.toggl.com/api/v9/me/time_entries")
+        sum_time=0
+        data = {}
+        data['entradas'] = []
+        for time_entrie in time_entries:
+            start = re.sub("\+00:00","",time_entrie['start'])
+            start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+            if start > now-timedelta(days=1): #Condición para que solo muestre los del día de hoy
+                print(time_entrie['description'])
+                RQ = cleanRq(time_entrie['description'])
+                etapa = cleanEtapa(time_entrie['description'])
+                act = cleanAct(time_entrie['description'])
+                description = cleanDescription(time_entrie['description'])
+                print(RQ)
+                print(etapa)
+                print(act)
+                print(description)
+                print(start)    
+                if time_entrie['stop'] != Null:
+                    stop = datetime.strptime(time_entrie['stop'], '%Y-%m-%dT%H:%M:%SZ')
+                    print(stop)
+                    diff=stop-start
+                    hours=timeMinuteToHour(diff)
+                    sum_time=sum_time+hours
+                    print("Diff: %s  Diff in Hours: %s" % (diff, hours))
+                    data['entradas'].append({
+                    'rq': RQ,
+                    'etapa': etapa,
+                    'act': act,
+                    'description': description,
+                    'diff': hours,
+                    'Total': sum_time})
+                print("\n")
+            print("Total Hours: %s" % (round(sum_time,1)))
+            saveJson(data)
+            pprint.pp(data)
+            consultas.inserInto(data)            
 
-
-response1 = requestApi("https://api.track.toggl.com/api/v9/me/time_entries")
-
-year = datetime.now().year
-month = datetime.now().month
-day = datetime.now().day
-hour = datetime.now().hour
-timestruct = datetime(year, month, day, hour).isoformat()
-print(timestruct)
-
-sum_time=0
-for time_entries in response1:
-    print(time_entries['description'])
-    RQ = cleanRq(time_entries['description'])
-    print(RQ)
-    start = re.sub("\+00:00","",time_entries['start'])
-    start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
-    print(start)
-    if time_entries['stop'] != Null:
-        stop = datetime.strptime(time_entries['stop'], '%Y-%m-%dT%H:%M:%SZ')
-        print(stop)
-        diff=stop-start
-        hours=timeMinuteToHour(diff)
-        sum_time=sum_time+hours
-        print("Diff: %s  Diff in Hours: %s" % (diff, hours))
-    print("\n")
-print("Total Hours: %s" % (round(sum_time,1)))
+if __name__ == '__main__':
+    main()

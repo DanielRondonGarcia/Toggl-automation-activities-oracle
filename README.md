@@ -37,24 +37,6 @@ Comprobando la conectividad a Internet...
 
 Intentando conectarme a Toggl, ¡espera!
 
-Hasta ahora has rastreado 120.00 horas
-
-Días hábiles restantes hasta la fecha límite: 7
-Total de días restantes hasta la fecha límite: 10
-
-Horas de trabajo requeridas para este mes: 170
-
-Para lograr el mínimo:
-     debe registrar 4.00 horas todos los días hábiles
-     o registra 3.00 horas todos los días
-
-Para lograr lo requerido:
-     debe registrar 7.00 horas todos los días hábiles
-     o registra 5.0 horas todos los días
-
-Hasta ahora has logrado:
-
-70.59% [=============================================== ==--------------|-------]
 ```
 Support or Contact
 ------------------

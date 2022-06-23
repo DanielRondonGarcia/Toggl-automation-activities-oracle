@@ -14,8 +14,7 @@ Installation on Windows
 * En el shell de comandos, ejecute los siguientes comandos
 
 ```
-easy_install pip
-pip install python-dateutil requests
+pip install -r requirements.txt
 ```
 
 * Descargar toggl_target desde [aqui](https://github.com/mos3abof/toggl_target/archive/master.zip)

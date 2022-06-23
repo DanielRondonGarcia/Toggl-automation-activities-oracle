@@ -25,6 +25,11 @@ pip install python-dateutil requests
 
 Uso
 -----
+* En toggl debes utilizar siempre este formato al crear el registro del tiempo `RQ[NoRequerimiento]ACT[NoEtapa-NoActividad]-Descripción`.
+  * Ejemplo:
+  ```
+  RQ[76871]ACT[0-43]-Capacitación sobre creación de escenarios de uso
+  ```
 Para usar el script, ejecute el siguiente comando:
 ```
 $ python main.py

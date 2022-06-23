@@ -9,7 +9,7 @@ Deberá instalar las bibliotecas de python `requeriments` para poder usar esto.
 Installation on Windows
 -----------------------
 
-* Si no tiene instalado Python, debe instalar Python 2.7 desde [here](http://python.org/ftp/python/2.7.5/python-2.7.5.msi)
+* Si no tiene instalado Python, debe instalar Python 2.9^ desde [here]([http://python.org/ftp/python/2.7.5/python-2.7.5.msi](https://www.python.org/downloads/windows/))
 * Abra el shell de comandos de Windows
 * En el shell de comandos, ejecute los siguientes comandos
 

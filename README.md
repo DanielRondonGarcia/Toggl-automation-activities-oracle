@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 * Descargar toggl_target desde [aqui](https://github.com/mos3abof/toggl_target/archive/master.zip)
 * Extraiga el archivo zip descargado
-* Cambia tu clave API y conexiones de base de datos en `config.py` Su token API de Toggl se puede encontrar en la configuración de su cuenta de Toggl.
+* Cambia tu clave API y conexiones de base de datos en `config.py` y quitar el `-example`.  Su token API de Toggl se puede encontrar en la configuración de su cuenta de Toggl.
 * Run `python main.py`
 
 Uso

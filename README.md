@@ -2,7 +2,7 @@ Toggl automation activities
 ===========================
 [![Codacy Badge](https://public-assets.toggl.com/b/static/170105782f890706f19f7ebc2cde9c59/a14e0/icon-toggltrack.png)](www.toggl.com)
 
-En el trabajo, hacemos un seguimiento de nuestras horas de trabajo en Toggl (www.toggl.com), así que creé este pequeño proyecto para calcular cuántas horas debo trabajar para lograr mis objetivos mensuales.
+En el trabajo, hacemos un seguimiento de nuestras horas de trabajo en Toggl (www.toggl.com), así que creé este pequeño proyecto para automatizar el registro todas las actividades diarias a la base de datos SGI (oracle).
 
 Deberá instalar las bibliotecas de python `requeriments` para poder usar esto.
 

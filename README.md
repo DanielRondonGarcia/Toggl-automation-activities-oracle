@@ -40,7 +40,23 @@ Comprobando la conectividad a Internet...
 ¡Internet parece estar bien!
 
 Intentando conectarme a Toggl, ¡espera!
+Client name: Daniel Gerardo Rondón García  Client ID: 8575225
 
+==========================================================================  
+Requerimiento: 76512
+Etapa: 0
+Actividad: 50
+Descripción: Asistencia a la sexta versión de la reunión Test Ninjas ACTSIS.
+Fecha de incio: 2022-06-24 20:01:09
+Fecha de incio: 2022-06-24 22:42:19
+Diff: 2:41:10  Diff in Hours: 2.7
+==========================================================================
+
+Total Hours: 6.8
+Escribe el Numero 1 si quiere registrar el tiempo en el SGI, si no, solo oprima la tecla Enter. Tambien puedes ver mejor cada detalle en el archivo creado en la ruta: logs/data-24-06-2022.json
+ 
+Escribió: 2
+No se han guardado las actividades
 ```
 Support or Contact
 ------------------

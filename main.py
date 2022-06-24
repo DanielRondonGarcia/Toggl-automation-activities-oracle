@@ -135,8 +135,7 @@ def main():
         for time_entrie in time_entries:
             start = re.sub("\+00:00","",time_entrie['start'])
             start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
-            if start > now-timedelta(hours=12): #Condición para que solo muestre los del día de hoy
-                print("LOOK AT THIS MADAFAKA: "+str(now-timedelta(hours=12)))
+            if start > now-timedelta(hours=12): #Condición para que solo muestre los del día de hoy                
                 RQ = cleanRq(time_entrie['description'])
                 etapa = cleanEtapa(time_entrie['description'])
                 act = cleanAct(time_entrie['description'])

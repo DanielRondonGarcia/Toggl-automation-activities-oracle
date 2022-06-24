@@ -27,23 +27,6 @@ def finalizar():
     # release the connection
     if connection:
         connection.close()
-        
-
-def forma_uno():
-    conectar()
-    try:
-        cur.execute('SELECT * FROM bases_objetos where rownum < 11')
-        for BASE, TIPO, NOMBRE, ESQUEMA, LAST_DDL_TIME, FECHA_SISTEMA  in cur:
-            print("Department number: ", BASE)
-            print("Department name: ", TIPO)
-            print("Department name: ", NOMBRE)
-            print("Department name: ", ESQUEMA)
-            print("Department name: ", LAST_DDL_TIME)
-            print("Department name: ", FECHA_SISTEMA)
-
-    except cx_Oracle.Error as error:
-        print(error)
-    finalizar()
 
 def getHours():
     try:
@@ -98,15 +81,6 @@ def activarRoles():
     except cx_Oracle.Error as error:
         print(error)
 
-def forma_dos():
-    conectar()
-    try:
-        cur.execute("SELECT NUMERO_REQUERIMIENTO, TIPO, DESCRIPCION, FECHA, HORAS, USER_SISTEMA, FECHA_SISTEMA, ETAPA, ESTADO_DESDE, ESTADO_HASTA, RESPONSABLE_DESDE, RESPONSABLE_HASTA FROM sgi.req_actividades WHERE numero_requerimiento = 76871 AND ROWNUM < 11 ORDER BY fecha DESC")
-        res = cur.fetchall()
-        print(res)
-    except cx_Oracle.Error as error:
-        print(error)
-    finalizar()
 
 def inserInto(data):
     try:
@@ -114,31 +88,24 @@ def inserInto(data):
         resHours = getHours()
         for id in resHours:
             Hours = id[0]
+        if Hours is None: # The variable is none
+            Hours = 0
         print("Ya se han registrado un total de: "+str(Hours)+" Horas")
         if Hours < 9:
             activarRoles()
             for row in data['entradas']:
                 consulta = ""            
-                consulta = """INSERT INTO sgi.req_actividades (NUMERO_REQUERIMIENTO, TIPO, DESCRIPCION, FECHA, HORAS, USER_SISTEMA, FECHA_SISTEMA, ETAPA, ESTADO_DESDE, ESTADO_HASTA, RESPONSABLE_DESDE, RESPONSABLE_HASTA) 
-                            VALUES ('+row['rq']+', 
-                                    '+row['act']+', 
-                                    '+"'"+row['description']+"'"+', 
-                                    sysdate, '+str(row['diff'])+', 
-                                    SYS_CONTEXT ('+"'USERENV'"+', 
-                                    '+"'SESSION_USER'"+'), 
-                                    sysdate, 
-                                    '+row['etapa']+', 
-                                    '+"'T'"+', 
-                                    '+"'T'"+', 
-                                    SYS_CONTEXT ('+"'USERENV'"+', 
-                                    '+"'SESSION_USER'"+'), 
-                                    SYS_CONTEXT ('+"'USERENV'"+', 
-                                    '+"'SESSION_USER'"+'))"""
+                consulta = 'INSERT INTO sgi.req_actividades (NUMERO_REQUERIMIENTO, TIPO, DESCRIPCION, FECHA, HORAS, USER_SISTEMA, FECHA_SISTEMA, ETAPA, ESTADO_DESDE, ESTADO_HASTA, RESPONSABLE_DESDE, RESPONSABLE_HASTA) VALUES ('+row['rq']+', '+row['act']+', '+"'"+row['description']+"'"+', sysdate, '+str(row['diff'])+', SYS_CONTEXT ('+"'USERENV'"+', '+"'SESSION_USER'"+'), sysdate, '+row['etapa']+', '+"'T'"+', '+"'T'"+', SYS_CONTEXT ('+"'USERENV'"+', '+"'SESSION_USER'"+'), SYS_CONTEXT ('+"'USERENV'"+', '+"'SESSION_USER'"+'))'
+                print("====================================================================================================================================")
                 print(consulta)
+                print("====================================================================================================================================\n")
                 cur.execute(consulta) 
             """ connection.rollback() """
             connection.commit()
+            print("Se han registrado las actividades correctamente")
             finalizar()
             return True
     except  cx_Oracle.Error as error:
+        print(error)
+        print("Se ha presentado un error al registrar las actividades")
         finalizar()        

@@ -4,6 +4,7 @@
 
 from typing_extensions import Self
 from unittest import result
+from click import confirm
 import requests
 from requests.structures import CaseInsensitiveDict
 import json  # parsing json data
@@ -134,20 +135,21 @@ def main():
         for time_entrie in time_entries:
             start = re.sub("\+00:00","",time_entrie['start'])
             start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
-            if start > now-timedelta(days=1): #Condición para que solo muestre los del día de hoy
-                print(time_entrie['description'])
+            if start > now-timedelta(hours=12): #Condición para que solo muestre los del día de hoy
+                print("LOOK AT THIS MADAFAKA: "+str(now-timedelta(hours=12)))
                 RQ = cleanRq(time_entrie['description'])
                 etapa = cleanEtapa(time_entrie['description'])
                 act = cleanAct(time_entrie['description'])
                 description = cleanDescription(time_entrie['description'])
-                print(RQ)
-                print(etapa)
-                print(act)
-                print(description)
-                print(start)    
+                print("==========================================================================")
+                print("Requerimiento: "+str(RQ))
+                print("Etapa: "+str(etapa))
+                print("Actividad: "+str(act))
+                print("Descripción: "+description)
+                print("Fecha de incio: "+str(start))                
                 if time_entrie['stop'] != Null:
                     stop = datetime.strptime(time_entrie['stop'], '%Y-%m-%dT%H:%M:%SZ')
-                    print(stop)
+                    print("Fecha de incio: "+str(stop))
                     diff=stop-start
                     hours=timeMinuteToHour(diff)
                     sum_time=sum_time+hours
@@ -159,11 +161,19 @@ def main():
                     'description': description,
                     'diff': hours,
                     'Total': sum_time})
+                print("==========================================================================")
                 print("\n")
-            print("Total Hours: %s" % (round(sum_time,1)))
-            saveJson(data)
-            pprint.pp(data)
-            consultas.inserInto(data)            
-
+        print("Total Hours: %s" % (round(sum_time,1)))
+        saveJson(data)
+        print("Escribe el Numero 1 si quiere registrar el tiempo en el SGI, si no, solo oprima la tecla Enter. Tambien puedes ver mejor cada detalle en el archivo creado en la ruta: "+'logs/data-'+str(now.strftime('%d-%m-%Y'))+'.json')
+        confirm = input()
+        print(f"Escribió: {confirm}")
+        try:
+            if int(confirm) == 1:
+                """ pprint.pp(data) """
+                consultas.inserInto(data)
+        except:
+            print("No se han guardado las actividades")
+            sys.exit()
 if __name__ == '__main__':
     main()

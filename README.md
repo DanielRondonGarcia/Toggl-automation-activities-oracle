@@ -20,6 +20,11 @@ pip install -r requirements.txt
 * Traer la Api desde [aqui](https://track.toggl.com/profile)
 * Extraiga el archivo zip descargado
 * Cambia tu clave API y conexiones de base de datos en `config.py` y quitar el `-example`.  Su token API de Toggl se puede encontrar en la configuración de su cuenta de Toggl.
+* Descargue la versión de 64 bits de Oracle instantClient desde: [aqui](https://www.oracle.com/database/technologies/instant-client/winx64-64-downloads.html)
+  * ![image](https://user-images.githubusercontent.com/61068392/176324441-f4fd17d0-d8d4-40c5-8687-6911c3fa1ba1.png)
+* Copie los archivos dll en el directorio instantclient al directorio python, como se muestra a continuación
+  * ![image](https://user-images.githubusercontent.com/61068392/176324506-82590467-6cca-4738-91b3-329c75f3e572.png)
+  * ![image](https://user-images.githubusercontent.com/61068392/176324547-7e999176-11e9-41f0-b92d-9c3fea3823dd.png)
 * Run `python main.py`
 
 Uso

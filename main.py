@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # @author DanielRondonGarcia <daniel5232010@gmail.com>
 
-from typing_extensions import Self
 from unittest import result
 from click import confirm
 import requests

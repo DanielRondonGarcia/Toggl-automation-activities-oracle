@@ -49,8 +49,8 @@ def saveJson(data):
     with open('logs/data-'+str(now.strftime('%d-%m-%Y'))+'.json', 'w', encoding="utf-8") as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
-def timeMinuteToHour(time):
-    return round(time/timedelta(hours=1), 1)
+def SecondsToHours(time):
+    return round(time/3600, 1)
 
 def decodeJSON(jsonString):
     return json.JSONDecoder().decode(jsonString)
@@ -146,10 +146,8 @@ def main():
                 print("Descripción: "+description)
                 print("Fecha de incio: "+str(start))                
                 if time_entrie['stop'] != Null:
-                    stop = datetime.strptime(time_entrie['stop'], '%Y-%m-%dT%H:%M:%SZ')
-                    print("Fecha de incio: "+str(stop))
-                    diff=stop-start
-                    hours=timeMinuteToHour(diff)
+                    diff=time_entrie["duration"];
+                    hours=SecondsToHours(diff)
                     sum_time=sum_time+hours
                     print("Diff: %s  Diff in Hours: %s" % (diff, hours))
                     data['entradas'].append({

@@ -63,6 +63,12 @@ Escribe el Numero 1 si quiere registrar el tiempo en el SGI, si no, solo oprima 
 Escribió: 2
 No se han guardado las actividades
 ```
+# Example 2
+
+#
+![image](https://user-images.githubusercontent.com/61068392/178859085-5fc9ac7a-6b14-4744-894e-2848635586c1.png)
+
+#
 Support or Contact
 ------------------
 Si tiene problemas para usar este código, puede comunicarse con daniel5232010@gmail.com y lo ayudaré a resolverlo si tengo suficiente tiempo :).

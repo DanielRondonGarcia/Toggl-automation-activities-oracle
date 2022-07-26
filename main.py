@@ -69,7 +69,7 @@ def cleanEtapa(str):
     return re.sub("\-","",limpieza)
 
 def cleanAct(str):
-    pattern = '(-[0-9]{2}\])'
+    pattern = '(-[0-9]{1,2}\])'
     lista = re.search(pattern,str)
     limpieza = lista[1]
     limpieza = re.sub("\-","",limpieza)
@@ -89,6 +89,7 @@ def setAPIKey(APIKey):
     # elaborar la Autorización
     authHeader = APIKey + ":" + "api_token"
     authHeader = "Basic " + b64encode(authHeader.encode()).decode('ascii').rstrip()
+    print(authHeader)
 
     # add it into the header
     headers['Authorization'] = authHeader

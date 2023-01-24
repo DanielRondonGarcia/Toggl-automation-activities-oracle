@@ -2,3 +2,4 @@
 config.py
 *.json
 *.pyc
+logs/data-06-09-2022.json.bk

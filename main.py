@@ -13,10 +13,11 @@ from datetime import datetime,timedelta
 from dateutil.parser import parse
 import re
 import sys
-import pprint
+import time
 import consultas
 import config
 import math
+import arrow
 
 Null = None
 flag = False
@@ -45,8 +46,9 @@ def progress_bar(progress,total):
     bar='█'* int(percent)+'-'*(100 - int(percent))
     print(f"\r{bar}|{percent:.2f}%",end="\r")
 
-def saveJson(data):
-    with open('logs/data-'+str(now.strftime('%d-%m-%Y'))+'.json', 'w', encoding="utf-8") as file:
+def saveJson(data, date):
+    print(date)
+    with open('logs/data-'+str(date.strftime('%d-%m-%y'))+'.json', 'w', encoding="utf-8") as file:
             json.dump(data, file, indent=4, ensure_ascii=False)
 
 def SecondsToHours(time):
@@ -69,7 +71,7 @@ def cleanEtapa(str):
     return re.sub("\-","",limpieza)
 
 def cleanAct(str):
-    pattern = '(-[0-9]{1,2}\])'
+    pattern = '(-[0-9]{1,3}\])'
     lista = re.search(pattern,str)
     limpieza = lista[1]
     limpieza = re.sub("\-","",limpieza)
@@ -109,6 +111,7 @@ def requestApi(url):
     # -----------------------------------------------------
     # Insertar los datos a la base de datos
     # -----------------------------------------------------
+    
 def main():
     print("Hola")
     print("Comprobando la conectividad a Internet...")
@@ -132,10 +135,13 @@ def main():
         sum_time=0
         data = {}
         data['entradas'] = []
+        print("Escribe la fecha a registrar con el formato YYYY/MM/DD")
+        fechaVal = input()
+        date_to_compare = datetime.strptime(fechaVal, "%Y/%m/%d")
+        print(f"Fecha: {date_to_compare}")
         for time_entrie in time_entries:
-            start = re.sub("\+00:00","",time_entrie['start'])
-            start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
-            if start > now-timedelta(hours=12): #Condición para que solo muestre los del día de hoy                
+            start = arrow.get(time_entrie['start']).to(config.timeZone)
+            if start.date() == date_to_compare.date(): #Condición para que solo muestre las entradas del 23
                 RQ = cleanRq(time_entrie['description'])
                 etapa = cleanEtapa(time_entrie['description'])
                 act = cleanAct(time_entrie['description'])
@@ -161,16 +167,23 @@ def main():
                 print("==========================================================================")
                 print("\n")
         print("Total Hours: %s" % (round(sum_time,1)))
-        saveJson(data)
-        print("Escribe el Numero 1 si quiere registrar el tiempo en el SGI, si no, solo oprima la tecla Enter. Tambien puedes ver mejor cada detalle en el archivo creado en la ruta: "+'logs/data-'+str(now.strftime('%d-%m-%Y'))+'.json')
+        saveJson(data,date_to_compare)
+        print("Escribe el Numero 1 si quiere registrar el tiempo en el SGI, si no, solo oprima la tecla Enter. Tambien puedes ver mejor cada detalle en el archivo creado en la ruta: "+'logs/data-'+str(date_to_compare.strftime('%d-%m-%Y'))+'.json')
         confirm = input()
         print(f"Escribió: {confirm}")
         try:
             if int(confirm) == 1:
                 """ pprint.pp(data) """
-                consultas.inserInto(data)
-        except:
+                consultas.inserInto(data,date_to_compare)
+        except Exception as e:
             print("No se han guardado las actividades")
+            print("Error: ", e)
+            print("Esperando 10 segundos...")
+            time.sleep(10)
             sys.exit()
+
 if __name__ == '__main__':
     main()
+    print("Esperando 10 segundos...")
+    time.sleep(10)
+    sys.exit()

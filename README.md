@@ -1,45 +1,70 @@
-Toggl automation activities
-===========================
+# Toggl automation activities
+
+---
+
 [![Codacy Badge](https://public-assets.toggl.com/b/static/170105782f890706f19f7ebc2cde9c59/a14e0/icon-toggltrack.png)](www.toggl.com)
 
 En el trabajo, hacemos un seguimiento de nuestras horas de trabajo en Toggl (www.toggl.com), así que creé este pequeño proyecto para automatizar el registro todas las actividades diarias a la base de datos SGI (oracle).
 
 Deberá instalar las bibliotecas de python `requeriments` para poder usar esto.
 
-Installation on Windows
------------------------
+## Installation on Windows
 
-* Si no tiene instalado Python, debe instalar Python 2.9^ desde [here](https://www.python.org/downloads/windows/)
-* Abra el shell de comandos de Windows
-* En el shell de comandos, ejecute los siguientes comandos
+---
 
+- Si no tiene instalado Python, debe instalar Python 2.9^ desde [here](https://www.python.org/downloads/windows/)
+
+- Instalar los msbuild tools desde [here](https://visualstudio.microsoft.com/es/visual-cpp-build-tools/)
+
+- Abra el shell de comandos de Windows
+
+- En el shell de comandos, ejecute los siguientes comandos
+
+```cli
+python -m pip install --upgrade pip setuptools wheel
 ```
+
+```cli
 pip install -r requirements.txt
 ```
 
-* Traer la Api desde [aqui](https://track.toggl.com/profile)
-* Extraiga el archivo zip descargado
-* Cambia tu clave API y conexiones de base de datos en `config.py` y quitar el `-example`.  Su token API de Toggl se puede encontrar en la configuración de su cuenta de Toggl.
-* Descargue la versión de 64 bits de Oracle instantClient desde: [aqui](https://www.oracle.com/database/technologies/instant-client/winx64-64-downloads.html)
-  * ![image](https://user-images.githubusercontent.com/61068392/176324441-f4fd17d0-d8d4-40c5-8687-6911c3fa1ba1.png)
-* Copie los archivos dll en el directorio instantclient al directorio python, como se muestra a continuación
-  * ![image](https://user-images.githubusercontent.com/61068392/176324506-82590467-6cca-4738-91b3-329c75f3e572.png)
-  * ![image](https://user-images.githubusercontent.com/61068392/176324547-7e999176-11e9-41f0-b92d-9c3fea3823dd.png)
-* Run `python main.py`
+- Traer la Api desde [aqui](https://track.toggl.com/profile)
 
-Uso
------
-* En toggl debes utilizar siempre este formato al crear el registro del tiempo `RQ[NoRequerimiento]ACT[NoEtapa-NoActividad]-Descripción`.
-  * Ejemplo:
-  ```
+- Extraiga el archivo zip descargado
+
+- Cambia tu clave API y conexiones de base de datos en `config.py` y quitar el `-example`.  Su token API de Toggl se puede encontrar en la configuración de su cuenta de Toggl.
+
+- Descargue la versión de 64 bits de Oracle instantClient desde: [aqui](https://www.oracle.com/database/technologies/instant-client/winx64-64-downloads.html)
+  - ![image](https://user-images.githubusercontent.com/61068392/176324441-f4fd17d0-d8d4-40c5-8687-6911c3fa1ba1.png)
+
+- Copie los archivos dll en el directorio instantclient al directorio python, como se muestra a continuación
+
+  - ![image](https://user-images.githubusercontent.com/61068392/176324506-82590467-6cca-4738-91b3-329c75f3e572.png)
+  - ![image](https://user-images.githubusercontent.com/61068392/176324547-7e999176-11e9-41f0-b92d-9c3fea3823dd.png)
+
+- Run `python main.py`
+
+## Uso
+
+---
+
+- En toggl debes utilizar siempre este formato al crear el registro del tiempo `RQ[NoRequerimiento]ACT[NoEtapa-NoActividad]-Descripción`.
+
+  - Ejemplo:
+
+  ```cli
   RQ[76871]ACT[0-43]-Capacitación sobre creación de escenarios de uso
   ```
+
 Para usar el script, ejecute el siguiente comando:
+
+```cli
+python main.py
 ```
-$ python main.py
-```
+
 La salida será algo como:
-```
+
+```cli
 Hola
 Comprobando la conectividad a Internet...
 ¡Internet parece estar bien!
@@ -63,28 +88,41 @@ Escribe el Numero 1 si quiere registrar el tiempo en el SGI, si no, solo oprima 
 Escribió: 2
 No se han guardado las actividades
 ```
-# Example 2
 
-#
+## Example 2
+
+---
 ![image](https://user-images.githubusercontent.com/61068392/178859085-5fc9ac7a-6b14-4744-894e-2848635586c1.png)
 
-#
+## Docker
+
+```cli
+docker build -t toggl-automation-activities-oracle .
+```
+
+Ahora puedes ejecutar el contenedor con el siguiente comando:
+
+```cli
+docker run -it toggl-automation-activities-oracle python main.py
+```
+
+---
 Support or Contact
-------------------
+
+---
 Si tiene problemas para usar este código, puede comunicarse con daniel5232010@gmail.com y lo ayudaré a resolverlo si tengo suficiente tiempo :).
 
-
 Bug Reports & Feature Requests
-------------------------------
+
+---
 
 Para informar errores, problemas o solicitudes de funciones, use la Cola de problemas en este repositorio de Github para que me sea más fácil de mantener. Por favor, no los envíe a mi correo electrónico.
 
-
-
 License
--------
 
-```
+---
+
+```cli
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or

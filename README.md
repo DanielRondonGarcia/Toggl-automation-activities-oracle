@@ -103,8 +103,13 @@ docker build -t toggl-automation-activities-oracle .
 Ahora puedes ejecutar el contenedor con el siguiente comando:
 
 ```cli
-docker run -it toggl-automation-activities-oracle python main.py
+docker run -it --rm toggl-automation-activities-oracle python main.py
 ```
+
+```cli
+docker run -it --rm -v ${pwd}\Src:C:\time toggl-automation-activities-oracle python main.py
+```
+
 
 ---
 Support or Contact

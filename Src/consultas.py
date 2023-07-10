@@ -12,7 +12,7 @@ def conectar():
         connection = cx_Oracle.connect(
             config.username,
             config.password,
-            config.dsn,
+            config.dns,
             encoding=config.encoding)
 
         # imprime la version de la base de datos

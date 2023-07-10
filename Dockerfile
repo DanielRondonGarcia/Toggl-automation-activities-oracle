@@ -56,8 +56,6 @@ RUN python -m pip install --upgrade pip setuptools wheel
 
 RUN pip install -r requirements.txt
 
-WORKDIR C:/time
-
 # Define the entry point for the Docker container.
 # This entry point starts the developer command prompt and launches the PowerShell shell.
 ENTRYPOINT ["C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\Tools\\VsDevCmd.bat", "&&", "powershell.exe", "-NoLogo", "-ExecutionPolicy", "Bypass"]
